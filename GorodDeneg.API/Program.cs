@@ -12,11 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
+    ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        sql => { sql.MigrationsAssembly("GorodDeneg.API"); sql.EnableRetryOnFailure(3); }
-    ));
+    options.UseNpgsql(connectionString));
 
 builder.Services.AddIdentity<AppUser, IdentityRole<int>>(options =>
 {
